@@ -1,7 +1,7 @@
 <template>
   <div>
     <DataFilter :tableHeader="tableHeader" @filterOut="filterData"></DataFilter>
-    <DataTable :tableData="tableData" />
+    <DataTable :tableData="tableData" :tableHeader="tableHeader"/>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ export default {
       return this.filtered ? this.filtered : jsonData;
     },
     tableHeader() {
-      return getHeader(this.tableData[0]);
+      return getHeader(jsonData[0]);
       }
   },
   methods: {
@@ -44,6 +44,7 @@ export default {
         data = filterTable(data, filterItem)
       })
 
+      data == [] ? null : data
       this.filtered = data
     },
   },

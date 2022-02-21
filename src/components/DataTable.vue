@@ -2,8 +2,8 @@
   <div v-if="tableData">
     <table>
       <tr>
-        <th v-for="header in Object.keys(tableData[0])" :key="header">
-          {{ header }}
+        <th v-for="header in tableHeader" :key="header">
+          {{ header.header }}
         </th>
       </tr>
       <tr v-for="row in tableData" :key="row.id">
@@ -18,7 +18,7 @@
 <script>
 export default {
   name: "Data Table",
-  props: ["tableData"],
+  props: ["tableData", "tableHeader"],
 };
 </script>
 
