@@ -2,7 +2,7 @@
   <div v-if="tableData">
     <table>
       <tr>
-        <th v-for="header in tableHeader" :key="header">
+        <th v-for="header in tableHeader" :key="header.header">
           {{ header.header }}
         </th>
       </tr>
