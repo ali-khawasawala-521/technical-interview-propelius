@@ -1,2 +1,0 @@
-import filterData from "./filterData";
-
