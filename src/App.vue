@@ -6,9 +6,16 @@
 </template>
 
 <script>
+// Data
 import jsonData from "./data/data.json";
+
+// Component
 import DataTable from "./components/DataTable.vue";
 import DataFilter from "./components/DataFilter.vue";
+
+// Composable
+import getHeader from "./composable/getHeader"
+import filterTable from "./composable/filterData"
 
 export default {
   name: "App",
@@ -18,82 +25,26 @@ export default {
   },
   data() {
     return {
-      filtered: null,
-      tableJson: jsonData,
+      filtered: null
     };
   },
   computed: {
     tableData() {
-      if (this.filtered) {
-        return this.filtered;
-      } else {
-        return this.tableJson;
-      }
+      return this.filtered ? this.filtered : jsonData;
     },
     tableHeader() {
-      if (this.tableData) {
-        return Object.keys(this.tableData[0]);
+      return getHeader(this.tableData[0]);
       }
-    },
   },
   methods: {
     filterData(filters) {
-      var newData = null;
-      var data = this.tableJson;
+      var data = jsonData;
 
-      if (filters.length > 0) {
-        filters.forEach((item) => {
-          if (item.search) {
-            if (item.parameter == "*") {
-              newData = data.filter((row) => {
-                if (row[item.header].includes(item.search)) {
-                  return row;
-                }
-              });
-            } else if (item.parameter == "=") {
-              newData = data.filter((row) => {
-                if (row[item.header] == item.search) {
-                  return row;
-                }
-              });
-            } else if (item.parameter == ">") {
-              newData = data.filter((row) => {
-                if (!isNaN(row[item.header]) && !isNaN(item.search)) {
-                  if (parseInt(row[item.header]) > parseInt(item.search)) {
-                    return row;
-                  }
-                } else if (
-                  Date.parse(row[item.header]) != NaN &&
-                  Date.parse(item.search) != NaN &&
-                  Date.parse(row[item.header]) > Date.parse(item.search)
-                ) {
-                  return row;
-                }
-              });
-            } else if (item.parameter == "<") {
-              newData = data.filter((row) => {
-                if (!isNaN(row[item.header]) && !isNaN(item.search)) {
-                  if (parseInt(row[item.header]) < parseInt(item.search)) {
-                    return row;
-                  }
-                } else if (
-                  Date.parse(row[item.header]) != NaN &&
-                  Date.parse(item.search) != NaN &&
-                  Date.parse(row[item.header]) < Date.parse(item.search)
-                ) {
-                  return row;
-                }
-              });
-            }
+      filters.forEach(filterItem => {
+        data = filterTable(data, filterItem)
+      })
 
-            data = newData;
-          }
-        });
-      } else {
-        newData = null;
-      }
-
-      this.filtered = newData;
+      this.filtered = data
     },
   },
 };

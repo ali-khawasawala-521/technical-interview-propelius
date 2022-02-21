@@ -4,15 +4,15 @@
     <button class="formBtn add" @click="addFilter">Add New</button>
     <form>
       <div v-for="(fields, idx) in filters" :key="idx">
-        <select v-model="fields.header" @change="filterData">
+        <select v-model="fields.column" @change="filterData">
           <option :value="header" v-for="header in tableHeader" :key="header">
-            {{ header }}
+            {{ header.header }}
           </option>
         </select>
         <select v-model="fields.parameter" @change="filterData">
           <option
             :value="param.operator"
-            v-for="param in parameters"
+            v-for="param in getParams(fields.column)"
             :key="param.parameter"
           >
             {{ param.name }}
@@ -33,18 +33,24 @@ export default {
   data() {
     return {
       filters: [],
-      parameters: [
+      strParams: [
         { name: "Equals", operator: "=" },
-        { name: "Includes", operator: "*" },
+        { name: "Includes", operator: "*" }
+      ],
+      numParams: [
         { name: "Greater Than", operator: ">" },
         { name: "Less Than", operator: "<" },
-      ],
+      ]
     };
   },
   props: ["tableHeader"],
+
   methods: {
+    getParams(value){
+      return !value.type ? [] : value.type == "str" ? this.strParams : this.numParams;
+    },
     addFilter() {
-      this.filters.push({ header: "", parameter: "", search: "" });
+      this.filters.push({ column: "", parameter: "", search: "" });
     },
     removeFilter(index) {
       this.filters.splice(index, 1);
